@@ -45,7 +45,7 @@ fn main() {
     // Handle incoming HTTP requests
     let server = builder.serve(move || {
         let user_db = user_db.clone();
-        service_fn(move |req| microservice_handler(req, &user_db));
+        service_fn(move |req| microservice_handler(req, &user_db))
     });
 
     // Drop any error
