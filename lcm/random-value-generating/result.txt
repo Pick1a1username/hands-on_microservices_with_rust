@@ -1,0 +1,59 @@
+   Compiling random-value-generating v0.1.0 (/home/virsh_list_all/src/github/hands-on_microservices_with_rust/lcm/random-value-generating)
+error: expected one of `.`, `;`, `?`, or an operator, found `let`
+  --> src/main.rs:30:5
+   |
+28 |              .takes_value(true))
+   |                                 - expected one of `.`, `;`, `?`, or an operator here
+29 | 
+30 |     let addr = matches.value_of("address")
+   |     ^^^ unexpected token
+
+warning: unused import: `std::env`
+ --> src/main.rs:1:5
+  |
+1 | use std::env;
+  |     ^^^^^^^^
+  |
+  = note: #[warn(unused_imports)] on by default
+
+warning: unused imports: `App`, `Arg`, `crate_authors`, `crate_description`, `crate_name`, `crate_version`
+ --> src/main.rs:3:12
+  |
+3 | use clap::{crate_authors, crate_description, crate_name, crate_version, Arg, App};
+  |            ^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^  ^^^^^^^^^^  ^^^^^^^^^^^^^  ^^^  ^^^
+
+warning: unused import: `dotenv::dotenv`
+ --> src/main.rs:4:5
+  |
+4 | use dotenv::dotenv;
+  |     ^^^^^^^^^^^^^^
+
+warning: unused imports: `Body`, `Response`, `Server`
+ --> src/main.rs:5:13
+  |
+5 | use hyper::{Body, Response, Server};
+  |             ^^^^  ^^^^^^^^  ^^^^^^
+
+warning: unused import: `hyper::rt::Future`
+ --> src/main.rs:6:5
+  |
+6 | use hyper::rt::Future;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `hyper::service::service_fn_ok`
+ --> src/main.rs:7:5
+  |
+7 | use hyper::service::service_fn_ok;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `debug`, `info`, `trace`
+ --> src/main.rs:9:11
+  |
+9 | use log::{debug, info, trace};
+  |           ^^^^^  ^^^^  ^^^^^
+
+error: aborting due to previous error
+
+error: Could not compile `random-value-generating`.
+
+To learn more, run the command again with --verbose.
