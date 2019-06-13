@@ -1,16 +1,29 @@
 use std::env;
+use std::fs::File;
+use std::io::{self, Read};
+use std::net::SocketAddr;
+
 
 use clap::{crate_authors, crate_description, crate_name, crate_version, Arg, App};
 use dotenv::dotenv;
 use hyper::{Body, Response, Server};
 use hyper::rt::Future;
 use hyper::service::service_fn_ok;
+use log::{debug, info, trace, warn};
+use serde_derive::Deserialize;
 
-use log::{debug, info, trace};
-
+#[derive(Deserialize)]
+struct Config {
+    address: SocketAddr,
+}
 
 fn main() {
+    dotenv().ok();
     env_logger::init();
+
+    info!("Rand Microservice - v0.1.0");
+    trace!("Starting...");
+    
     let matches = App::new(crate_name!())
         .version(crate_version!())
         .author(crate_authors!())
@@ -26,23 +39,34 @@ fn main() {
              .long("config")
              .value_name("FILE")
              .help("Sets a custom config file")
-             .takes_value(true));
+             .takes_value(true))
+        .get_matches();
+
+    let config = File::open("microservice.toml")
+        .and_then(|mut file| {
+            let mut buffer = String::new();
+            file.read_to_string(&mut buffer)?;
+            Ok(buffer)
+        })
+        .and_then(|buffer| {
+            toml::from_str::<Config>(&buffer)
+                .map_err(|err|
+                    io::Error::new(io::ErrorKind::Other, err))
+        })
+        .map_err(|err| {
+            warn!("Can't read config file: {}", err);
+        })
+        .ok();
 
     let addr = matches.value_of("address")
         .map(|s| s.to_owned())
         .or(env::var("ADDRESS").ok())
-        .unwrap_or_else(|| "127.0.0.1:8080".into())
-        .parse()
-        .expect("can't parse ADDRESS variable");
+        .and_then(|addr| addr.parse().ok())
+        .or(config.map(|config| config.address))
+        .or_else(|| Some(([127, 0, 0, 1], 8080).into()))
+        .unwrap();
 
-    info!("Rand Microservice - v0.1.0");
 
-    trace!("Starting...");
-    // let addr = ([127, 0, 0, 1], 8080).into();
-    let addr = env::var("ADDRESS")
-        .unwrap_or_else(|_| "127.0.0.1:8080".into())
-        .parse()
-        .expect("can't parse ADDRESS variable");
     debug!("Trying to bind server to address: {}", addr);
     let builder = Server::bind(&addr);
     trace!("Creating service handler...");
