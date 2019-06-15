@@ -1,0 +1,19 @@
+[package]
+name = "random-value-generating"
+version = "0.1.0"
+authors = ["Pick1a1username <20301273+Pick1a1username@users.noreply.github.com>"]
+edition = "2018"
+
+[dependencies]
+clap = "2.32"
+dotenv = "0.13"
+env_logger = "0.5"
+futures = "0.1"
+hyper = "0.12"
+log = "0.4"
+pretty_env_logger = "0.2"
+rand = "0.5"
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"
+toml = "0.4"
