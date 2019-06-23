@@ -5,9 +5,15 @@ authors = ["Pick1a1username <20301273+Pick1a1username@users.noreply.github.com>"
 edition = "2018"
 
 [dependencies]
+# base64 = "0.9"
+# 0.9 is used in the book. But 0.10 is used in the Github repository.
+# Also, building is failed if 0.9 is used.
+base64 = "0.10"
+base64-serde = "0.3"
 clap = "2.32"
 dotenv = "0.13"
 env_logger = "0.5"
+failure = "0.1"
 futures = "0.1"
 hyper = "0.12"
 log = "0.4"
