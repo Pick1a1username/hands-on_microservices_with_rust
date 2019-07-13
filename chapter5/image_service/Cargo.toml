@@ -1,0 +1,11 @@
+[package]
+name = "image_service"
+version = "0.1.0"
+authors = ["Pick1a1username <20301273+Pick1a1username@users.noreply.github.com>"]
+edition = "2018"
+
+[dependencies]
+futures = "0.1.28"
+hyper = "0.12"
+rand = "0.5"
+tokio = "0.1.22"
