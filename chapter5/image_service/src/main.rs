@@ -5,13 +5,19 @@ use std::fs;
 use futures::{future, Future, Stream};
 use hyper::{Body, Method, Request, Response, Server, StatusCode};
 use hyper::service::service_fn;
+use hyper_staticfile::FileChunkStream;
+use lazy_static::lazy_static;
 use rand::{thread_rng, Rng};
 use rand::distributions::Alphanumeric;
+use regex::Regex;
 use tokio::fs::File;
 
 
 static INDEX: &[u8] = b"Image Service";
 
+lazy_static! {
+    static ref DOWNLOAD_FILE: Regex = Regex::new("^/download/(?P<filename>\\w{20})?$").unwrap();
+}
 
 fn microservice_handler(req: Request<Body>, files: &Path)
     -> Box<Future<Item=Response<Body>, Error=std::io::Error> + Send>
@@ -40,6 +46,22 @@ fn microservice_handler(req: Request<Body>, files: &Path)
                 Response::new(name.into())
             });
             Box::new(body)
+        },
+        (&Method::GET, path) if path.starts_with("/download") => {
+            if let Some(cap) = DOWNLOAD_FILE.captures(path) {
+                let filename = cap.name("filename").unwrap().as_str();
+                let mut filepath = files.to_path_buf();
+                filepath.push(filename);
+
+                let open_file = File::open(filepath);
+                let body = open_file.map(|file| {
+                    let chunks = FileChunkStream::new(file);
+                    Response::new(Body::wrap_stream(chunks))
+                });
+                Box::new(body)
+            } else {
+                response_with_code(StatusCode::NOT_FOUND)
+            }
         },
         _ => {
             response_with_code(StatusCode::NOT_FOUND)
